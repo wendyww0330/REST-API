@@ -1,5 +1,61 @@
 # agent-task-runner
 
+A minimal REST API that simulates an AI agent task runner — create tasks, list them,
+and "run" them through a mock tool call. Built in TypeScript and Node.js as a
+hands-on learning project to practice clean backend architecture and test-driven
+development.
+
+## What it does
+
+- `POST /tasks` — create a task
+- `GET /tasks` — list tasks
+- `GET /tasks/:id` — fetch a single task (404 if not found)
+- `POST /tasks/:id/run` — run the task via a mock tool
+- `GET /health` — health check endpoint
+
+## Design
+
+Three-layer architecture:
+
+- **Routes** — thin HTTP layer, input validation via zod, async error forwarding
+- **Service** — business logic, depends on a repository **interface** (dependency
+  inversion), so the data layer can be swapped without touching the service
+- **Repository** — in-memory implementation; designed so a SQLite/SQL backend
+  can be plugged in without changing the rest of the code
+
+Cross-cutting concerns:
+
+- Centralized error handling middleware mapping domain errors → HTTP status codes
+- Custom `NotFoundError` separates "resource not found" (404) from real bugs (500)
+- Health check endpoint for container orchestration
+
+## Testing
+
+- **Unit tests** — service logic in isolation
+- **Integration tests** — full HTTP chain via `supertest`
+- Organized using Arrange-Act-Assert
+
+## Stack
+
+TypeScript · Node.js · Express · zod · Vitest · supertest · Docker
+
+## Run
+
+\`\`\`bash
+npm install
+npm test      # run the test suite
+npm run dev   # start the dev server on :3000
+\`\`\`
+
+## Why this project
+
+A small but realistic backend codebase to practice TypeScript, layered architecture,
+dependency inversion, and TDD. The "agent task runner" framing is intentional —
+the patterns here (status transitions, tool calls, centralized error handling,
+observability hooks) are the same ones a real AI agent harness needs to solve.
+
+# agent-task-runner
+
 一个迷你版 "AI agent 任务运行器" REST API。**同时覆盖 TypeScript / Node / Express / TDD / 微服务概念 / Docker**。
 
 ---
